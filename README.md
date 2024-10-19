@@ -1,19 +1,19 @@
 Sistema de Gerenciamento de Pacientes com Flask
 Este é um sistema de gerenciamento de pacientes desenvolvido em Python usando o framework Flask. O aplicativo permite adicionar pacientes, calcular pontuações de risco com base em diversas métricas médicas e priorizar visitas domiciliares de acordo com o risco total. O sistema armazena os dados dos pacientes em um arquivo Excel e oferece uma interface web simples para interação.
 
-Sumário
+    Sumário
 
-1) Funcionalidades
-2) Tecnologias Utilizadas
-3) Pré-requisitos
-4) Instalação
-5) Uso
-6) Estrutura do Projeto
-7) Cálculo de Risco Total
-8) Considerações de Segurança
-9) Contribuição
-10) Licença
-11) Agradecimentos
+    1) Funcionalidades
+    2) Tecnologias Utilizadas
+    3) Pré-requisitos
+    4) Instalação
+    5) Uso
+    6) Estrutura do Projeto
+    7) Cálculo de Risco Total
+    8) Considerações de Segurança
+    9) Contribuição
+    10) Licença
+    11) Agradecimentos
 
 1) Funcionalidades
 Adicionar Pacientes: Permite adicionar novos pacientes com informações detalhadas, incluindo dados pessoais e métricas médicas.
@@ -78,51 +78,50 @@ Marcar como Visitado: Marque pacientes como visitados para atualizar suas priori
 Remover Paciente: Remova pacientes da lista conforme necessário.
 
 6) Estrutura do Projeto
-TUPI/
-│
-├── app.py                # Código principal da aplicação Flask
-├── requirements.txt      # Lista de dependências do Python
-├── Procfile              # Arquivo para implantação no Heroku
-├── runtime.txt           # Especifica a versão do Python para o Heroku
-├── README.md             # Este arquivo
-├── .gitignore            # Arquivos e pastas ignorados pelo Git
-└── templates/            # Pasta com os templates HTML
-    ├── index.html        # Template da página principal
-    └── adicionar.html    # Template do formulário de adição
+    TUPI/
+    │
+    ├── app.py                # Código principal da aplicação Flask
+    ├── requirements.txt      # Lista de dependências do Python
+    ├── Procfile              # Arquivo para implantação no Heroku
+    ├── runtime.txt           # Especifica a versão do Python para o Heroku
+    ├── README.md             # Este arquivo
+    ├── .gitignore            # Arquivos e pastas ignorados pelo Git
+    └── templates/            # Pasta com os templates HTML
+        ├── index.html        # Template da página principal
+        └── adicionar.html    # Template do formulário de adição
 
 7) Cálculo de Risco Total
 O Risco Total é calculado com base nos seguintes fatores:
+    Idade:
+    ≥ 80 anos: 3 pontos
+    70-79 anos: 2 pontos
+    60-69 anos: 1 ponto
+    < 60 anos: 0 pontos
+    
+    Comorbidades: Cada comorbidade adiciona 2 pontos.
+    Escore de Framingham:
+    Alto: 3 pontos
+    Moderado: 2 pontos
+    Baixo: 1 ponto
+    
+    CKD-EPI:
+    Estágio V: 3 pontos
+    Estágio IV: 2 pontos
+    Estágio III: 1 ponto
+    Estágios I e II: 0 pontos
+    
+    Internação Recente:
+    Sim: 3 pontos
+    Não: 0 pontos
+    Nota: Pacientes não visitados são priorizados na lista. O risco total determina a ordem de prioridade para visitas domiciliares.
 
-Idade:
-≥ 80 anos: 3 pontos
-70-79 anos: 2 pontos
-60-69 anos: 1 ponto
-< 60 anos: 0 pontos
-
-Comorbidades: Cada comorbidade adiciona 2 pontos.
-Escore de Framingham:
-Alto: 3 pontos
-Moderado: 2 pontos
-Baixo: 1 ponto
-
-CKD-EPI:
-Estágio V: 3 pontos
-Estágio IV: 2 pontos
-Estágio III: 1 ponto
-Estágios I e II: 0 pontos
-
-Internação Recente:
-Sim: 3 pontos
-Não: 0 pontos
-Nota: Pacientes não visitados são priorizados na lista. O risco total determina a ordem de prioridade para visitas domiciliares.
-
-8) Considerações de Segurança
+9) Considerações de Segurança
 Dados Sensíveis: O aplicativo lida com informações pessoais de pacientes. Certifique-se de proteger esses dados e cumprir as leis e regulamentações de privacidade aplicáveis.
 Arquivo pacientes.xlsx: Este arquivo contém os dados dos pacientes e não deve ser compartilhado publicamente ou enviado para repositórios online.
 .gitignore: O arquivo .gitignore está configurado para ignorar pacientes.xlsx e outras pastas sensíveis.
 Uso Responsável: Este aplicativo é um protótipo e não deve ser usado em ambientes de produção sem implementações adequadas de segurança e conformidade legal.
 
-9) Contribuição
+10) Contribuição
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues para relatar bugs ou solicitar melhorias, e pull requests para propor alterações.
 
 9.1) Passos para Contribuir
