@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Paciente</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Estilos gerais */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: auto;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            color: #5a67d8;
+        }
+        form label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: bold;
+        }
+        form input[type="text"],
+        form input[type="number"],
+        form select,
+        form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        form input[type="submit"] {
+            background-color: #5a67d8;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        form input[type="submit"]:hover {
+            background-color: #434190;
+        }
+        .fa-edit {
+            font-size: 50px;
+            color: #5a67d8;
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        /* Estilos para os checkboxes */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 5px;
+            transform: scale(1.2);
+        }
+        /* Ajustes para telas menores */
+        @media (max-width: 500px) {
+            .checkbox-group {
+                grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <i class="fas fa-edit"></i>
+        <h1>Editar Paciente</h1>
+        <form method="post">
+            <!-- Campos do formulário -->
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" value="{{ paciente['Nome'] }}" required>
+
+            <label for="cns">CNS:</label>
+            <input type="text" id="cns" name="cns" value="{{ paciente['CNS'] }}" required>
+
+            <label for="idade">Idade:</label>
+            <input type="number" id="idade" name="idade" min="0" max="120" value="{{ paciente['Idade'] }}" required>
+
+            <label for="sexo">Sexo:</label>
+            <select id="sexo" name="sexo" required>
+                <option value="Masculino" {% if paciente['Sexo'] == 'Masculino' %}selected{% endif %}>Masculino</option>
+                <option value="Feminino" {% if paciente['Sexo'] == 'Feminino' %}selected{% endif %}>Feminino</option>
+            </select>
+
+            <label for="diabetes">Diabetes:</label>
+            <select id="diabetes" name="diabetes" required>
+                <option value="Sim" {% if paciente['Diabetes'] == 'Sim' %}selected{% endif %}>Sim</option>
+                <option value="Não" {% if paciente['Diabetes'] == 'Não' %}selected{% endif %}>Não</option>
+            </select>
+
+            <label for="fumante">Fumante:</label>
+            <select id="fumante" name="fumante" required>
+                <option value="Sim" {% if paciente['Fumante'] == 'Sim' %}selected{% endif %}>Sim</option>
+                <option value="Não" {% if paciente['Fumante'] == 'Não' %}selected{% endif %}>Não</option>
+            </select>
+
+            <label for="hipertensao">Hipertensão:</label>
+            <select id="hipertensao" name="hipertensao" required>
+                <option value="Sim" {% if paciente['Hipertensão'] == 'Sim' %}selected{% endif %}>Sim</option>
+                <option value="Não" {% if paciente['Hipertensão'] == 'Não' %}selected{% endif %}>Não</option>
+            </select>
+
+            <label for="tratamento_hipertensao">Em Tratamento para Hipertensão:</label>
+            <select id="tratamento_hipertensao" name="tratamento_hipertensao" required>
+                <option value="Sim" {% if paciente['Tratamento Hipertensão'] == 'Sim' %}selected{% endif %}>Sim</option>
+                <option value="Não" {% if paciente['Tratamento Hipertensão'] == 'Não' %}selected{% endif %}>Não</option>
+            </select>
+
+            <label for="colesterol_total">Colesterol Total (mg/dL):</label>
+            <input type="number" id="colesterol_total" name="colesterol_total" step="any" value="{{ paciente['Colesterol Total'] }}" required>
+
+            <label for="hdl">HDL (mg/dL):</label>
+            <input type="number" id="hdl" name="hdl" step="any" value="{{ paciente['HDL'] }}" required>
+
+            <label for="pressao_sistolica">Pressão Sistólica (mmHg):</label>
+            <input type="number" id="pressao_sistolica" name="pressao_sistolica" step="any" value="{{ paciente['Pressão Sistólica'] }}" required>
+
+            <label for="creatinina_serica">Creatinina Sérica (mg/dL):</label>
+            <input type="number" id="creatinina_serica" name="creatinina_serica" step="any" value="{{ paciente['Creatinina Sérica'] }}" required>
+
+            <label for="internacao_recente">Internação Recente:</label>
+            <select id="internacao_recente" name="internacao_recente" required>
+                <option value="Sim" {% if paciente['Internação Recente'] == 'Sim' %}selected{% endif %}>Sim</option>
+                <option value="Não" {% if paciente['Internação Recente'] == 'Não' %}selected{% endif %}>Não</option>
+            </select>
+
+            <label>Comorbidades:</label>
+            <div class="checkbox-group">
+                {% for comorbidade in comorbidades %}
+                <div class="checkbox-item">
+                    <input type="checkbox" id="{{ comorbidade }}" name="comorbidades" value="{{ comorbidade }}" {% if paciente[comorbidade] == 'Sim' %}checked{% endif %}>
+                    <label for="{{ comorbidade }}">{{ comorbidade }}</label>
+                </div>
+                {% endfor %}
+            </div>
+
+            <label for="medicamentos">Medicamentos em Uso:</label>
+            <textarea id="medicamentos" name="medicamentos" rows="3">{{ paciente['Medicamentos'] }}</textarea>
+
+            <input type="submit" value="Atualizar Paciente">
+        </form>
+    </div>
+</body>
+</html>
