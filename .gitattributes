@@ -1,2 +1,27 @@
-# Auto detect text files and perform LF normalization
+# Comportamento padrão para normalizar finais de linha
 * text=auto
+
+# Especificação de arquivos de texto com finais de linha LF
+*.py     text eol=lf
+*.html   text eol=lf
+*.css    text eol=lf
+*.js     text eol=lf
+*.json   text eol=lf
+*.md     text eol=lf
+
+# Tratamento de arquivos binários
+*.xlsx   binary
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.svg    binary
+
+# (Opcional) Definições de diff personalizadas
+*.py     diff=python
+*.html   diff=html
+*.css    diff=css
+*.js     diff=javascript
+
+# (Opcional) Regras personalizadas para subdiretórios ou padrões específicos
+# config/*.bin binary
