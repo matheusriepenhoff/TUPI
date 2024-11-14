@@ -2,12 +2,13 @@
 
 Este fluxograma orienta a equipe sobre a estrutura do sistema, a interação entre os arquivos e as integrações utilizadas.
 
+
 ```mermaid
 flowchart TD
     Start([Início]) --> Init[Inicializar main.py]
     Init --> LoadData[Carregar dados de pacientes.xlsx]
     LoadData --> CheckBackup{Backup disponível?}
-    CheckBackup -- Sim --> LoadBackup[Carregar backup]
+    CheckBackup -- Sim --> LoadBackup[Carregar Backup]
     CheckBackup -- Não --> Continue[Continuar]
     Continue --> RunApp[Executar app.py]
     RunApp -->|Flask| Routes[Definição de Rotas]
@@ -27,6 +28,26 @@ flowchart TD
     end
 
     RunApp -->|Recebe requisições| Routes
+
+    %% Detalhes das Rotas
+    subgraph Routes
+        AddPatient[Adicionar Paciente]
+        ViewPatients[Visualizar Pacientes]
+        EditPatient[Editar Paciente]
+        DeletePatient[Remover Paciente]
+    end
+
+    RunApp -->|Recebe requisições| Routes
+%% Detalhes das Rotas
+    subgraph Routes
+        AddPatient[Adicionar Paciente]
+        ViewPatients[Visualizar Pacientes]
+        EditPatient[Editar Paciente]
+        DeletePatient[Remover Paciente]
+    end
+    RunApp -->|Recebe requisições| Routes
+```
+
 
 ## Descrição do Fluxograma
 
