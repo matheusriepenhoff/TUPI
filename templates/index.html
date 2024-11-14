@@ -1,211 +1,346 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Pacientes</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* Estilos existentes */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            flex-direction: column;
-            height: auto;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            color: #5a67d8;
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            table-layout: fixed;
-            overflow-x: auto;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-            word-wrap: break-word;
-            font-size: 14px; /* Ajuste do tamanho da fonte para melhor visualização */
-        }
-        th {
-            background-color: #5a67d8;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr.visited {
-            background-color: #e0e0e0;
-        }
-        tr.recent-hospitalization {
-            background-color: #ffefc4;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-        .btn {
-            padding: 6px 10px;
-            background-color: #5a67d8;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn:hover {
-            background-color: #434190;
-        }
-        .actions {
-            display: flex;
-            justify-content: center;
-            gap: 5px;
-        }
-        .fa-trash, .fa-home, .fa-check, .fa-edit {
-            font-size: 14px;
-            margin-right: 5px;
-        }
-        form {
-            display: inline;
-        }
-        .info {
-            margin-top: 20px;
-            width: 100%;
-            max-width: 800px;
-            text-align: left;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .info h2 {
-            color: #5a67d8;
-        }
-        /* Estilos para dispositivos móveis */
-        @media (max-width: 768px) {
-            table, th, td {
-                font-size: 12px;
-            }
-            .btn {
-                font-size: 12px;
-                padding: 5px 8px;
-            }
-            .fa-trash, .fa-home, .fa-check, .fa-edit {
-                font-size: 12px;
-            }
-            .info {
-                padding: 10px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <h1>Lista de Pacientes</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Prioridade</th>
-                <th>Nome</th>
-                <th>CNS</th>
-                <th>Idade</th>
-                <th>Sexo</th>
-                <th>Risco Total</th>
-                <th>Framingham</th>
-                <th>CKD-EPI</th>
-                <th>Internação Recente</th>
-                <th>Medicamentos</th>
-                <th>Visitado</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for paciente in pacientes %}
-            <tr class="{% if paciente['Visitado'] %}visited{% endif %} {% if paciente['Internação Recente'] == 'Sim' %}recent-hospitalization{% endif %}">
-                <td>{{ loop.index }}</td>
-                <td>{{ paciente['Nome'] }}</td>
-                <td>{{ paciente['CNS'] }}</td>
-                <td>{{ paciente['Idade'] }}</td>
-                <td>{{ paciente['Sexo'] }}</td>
-                <td>{{ paciente['Risco Total'] }}</td>
-                <td>{{ "%.2f" | format(paciente['Score Framingham']) }}% - {{ paciente['Classificação Framingham'] }}</td>
-                <td>{{ "%.2f" | format(paciente['CKD-EPI']) }} ml/min - {{ paciente['Classificação CKD-EPI'] }}</td>
-                <td>{{ paciente['Internação Recente'] }}</td>
-                <td>{{ paciente['Medicamentos'] }}</td>
-                <td>{{ 'Sim' if paciente['Visitado'] else 'Não' }}</td>
-                <td class="actions">
-                    {% if not paciente['Visitado'] %}
-                    <form action="/marcar_visitado/{{ loop.index0 }}" method="post">
-                        <button type="submit" class="btn">
-                            <i class="fas fa-check"></i> Visitar
-                        </button>
-                    </form>
-                    {% endif %}
-                    <form action="/editar/{{ loop.index0 }}" method="get">
-                        <button type="submit" class="btn">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                    </form>
-                    <form action="/remover/{{ loop.index0 }}" method="post">
-                        <button type="submit" class="btn">
-                            <i class="fas fa-trash"></i> Remover
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div style="text-align: center; width: 100%; max-width: 600px;">
-        <a href="/adicionar" class="btn">
-            <i class="fas fa-home"></i> Adicionar Paciente
-        </a>
+{% extends "base.html" %}
+
+{% block title %}Lista de Pacientes{% endblock %}
+
+{% block extra_css %}
+<style>
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.risk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.risk-item {
+    background: var(--surface-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.risk-indicator {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: bold;
+}
+
+.high-risk {
+    background-color: rgba(229, 62, 62, 0.1);
+}
+
+.medium-risk {
+    background-color: rgba(221, 107, 32, 0.1);
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.badge-warning {
+    background-color: var(--warning-color);
+    color: white;
+}
+
+.badge-success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.badge-alto {
+    background-color: #e53e3e;
+    color: white;
+}
+
+.badge-moderado {
+    background-color: #dd6b20;
+    color: white;
+}
+
+.badge-baixo {
+    background-color: #38a169;
+    color: white;
+}
+
+.badge-ckd {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.inline-form {
+    margin: 0;
+    display: inline-block;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--surface-color);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.details-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.detail-item h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.comorbidades-list,
+.exames-list {
+    list-style: none;
+    padding: 0;
+}
+
+.comorbidades-list li,
+.exames-list li {
+    margin-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .risk-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .table-container {
+        margin: 1rem -1rem;
+    }
+
+    .actions-cell {
+        flex-wrap: wrap;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-header">
+        <h1 class="text-center">Gestão de Pacientes</h1>
+        <div class="actions mt-4">
+            <a href="{{ url_for('adicionar') }}" class="btn btn-primary" onclick="showLoading()">
+                <i class="fas fa-plus"></i> Adicionar Paciente
+            </a>
+        </div>
     </div>
 
-    <div class="info">
+    {% if pacientes %}
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Prioridade</th>
+                    <th>Nome</th>
+                    <th>CNS</th>
+                    <th>Idade</th>
+                    <th>Risco Total</th>
+                    <th>Framingham</th>
+                    <th>CKD-EPI</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paciente in pacientes %}
+                <tr class="{% if paciente['Risco Total'] >= 10 %}high-risk{% elif paciente['Risco Total'] >= 5 %}medium-risk{% endif %}">
+                    <td class="text-center">{{ loop.index }}</td>
+                    <td>{{ paciente['Nome']|e }}</td>
+                    <td>{{ paciente['CNS']|e }}</td>
+                    <td>{{ paciente['Idade'] }}</td>
+                    <td>
+                        <div class="risk-indicator" data-risk="{{ paciente['Risco Total'] }}">
+                            {{ paciente['Risco Total'] }}
+                        </div>
+                    </td>
+                    <td>
+                        {{ "%.1f"|format(paciente['Score Framingham']) }}% - 
+                        <span class="badge badge-{{ paciente['Classificação Framingham']|lower }}">
+                            {{ paciente['Classificação Framingham']|e }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ "%.1f"|format(paciente['CKD-EPI']) }} - 
+                        <span class="badge badge-ckd">
+                            {{ paciente['Classificação CKD-EPI']|e }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if paciente['Internação Recente'] == 'Sim' %}
+                            <span class="badge badge-warning">Internação Recente</span>
+                        {% endif %}
+                        {% if paciente['Visitado'] %}
+                            <span class="badge badge-success">Visitado</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions-cell">
+                        {% if not paciente['Visitado'] or (pacientes|selectattr('Visitado')|list|length == pacientes|length) %}
+                            <form method="POST" 
+                                  action="{{ url_for('marcar_visitado', paciente_id=paciente_id[loop.index0]) }}" 
+                                  class="inline-form visita-form">
+                                <button type="submit" 
+                                        class="btn btn-sm btn-success" 
+                                        onclick='return confirm("{% if paciente.Visitado %}Remarcar visita para este paciente?{% else %}Marcar paciente como visitado?{% endif %}")'>
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                        {% endif %}
+                        
+                        <a href="{{ url_for('editar', paciente_id=loop.index0) }}" 
+                           class="btn btn-sm btn-primary" 
+                           onclick="showLoading()"
+                           title="Editar paciente">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        
+                        <button type="button" class="btn btn-sm btn-info" 
+                                onclick="showDetails('{{ loop.index0 }}')"
+                                title="Ver detalhes">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% for paciente in pacientes %}
+    <div id="details-{{ loop.index0 }}" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Detalhes do Paciente</h2>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <h3>Medicamentos</h3>
+                    <p>{{ paciente['Medicamentos']|e or 'Não informado' }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <h3>Comorbidades</h3>
+                    <ul class="comorbidades-list">
+                        {% for comorbidade in comorbidades %}
+                            {% if paciente[comorbidade] == 'Sim' %}
+                                <li>{{ comorbidade }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="detail-item">
+                    <h3>Exames</h3>
+                    <ul class="exames-list">
+                        <li>Colesterol Total: {{ paciente['Colesterol Total'] }} mg/dL</li>
+                        <li>HDL: {{ paciente['HDL'] }} mg/dL</li>
+                        <li>Pressão Sistólica: {{ paciente['Pressão Sistólica'] }} mmHg</li>
+                        <li>Creatinina: {{ paciente['Creatinina Sérica'] }} mg/dL</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="hideDetails('{{ loop.index0 }}')">Fechar</button>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div class="card text-center">
+        <p>Nenhum paciente cadastrado.</p>
+        <a href="{{ url_for('adicionar') }}" class="btn btn-primary">Adicionar Primeiro Paciente</a>
+    </div>
+    {% endif %}
+
+    <div class="card mt-4">
         <h2>Classificação de Risco</h2>
-        <p>O risco total é calculado com base na idade, número de comorbidades, Escore de Framingham, CKD-EPI e internação recente. Cada fator contribui para a pontuação total, que determina a prioridade de visita.</p>
-        <ul>
-            <li><strong>Idade:</strong>
+        <div class="risk-grid">
+            <div class="risk-item">
+                <h3>Idade</h3>
                 <ul>
                     <li>≥ 80 anos: 3 pontos</li>
                     <li>70-79 anos: 2 pontos</li>
                     <li>60-69 anos: 1 ponto</li>
-                    <li>&lt; 60 anos: 0 pontos</li>
+                    <li>< 60 anos: 0 pontos</li>
                 </ul>
-            </li>
-            <li><strong>Comorbidades:</strong> Cada comorbidade adiciona 2 pontos.</li>
-            <li><strong>Escore de Framingham:</strong>
+            </div>
+
+            <div class="risk-item">
+                <h3>Comorbidades</h3>
+                <p>Cada comorbidade: 2 pontos</p>
+            </div>
+
+            <div class="risk-item">
+                <h3>Framingham</h3>
                 <ul>
                     <li>Alto: 3 pontos</li>
                     <li>Moderado: 2 pontos</li>
                     <li>Baixo: 1 ponto</li>
                 </ul>
-            </li>
-            <li><strong>CKD-EPI:</strong>
+            </div>
+
+            <div class="risk-item">
+                <h3>CKD-EPI</h3>
                 <ul>
                     <li>Estágio V: 3 pontos</li>
                     <li>Estágio IV: 2 pontos</li>
                     <li>Estágio III: 1 ponto</li>
                     <li>Estágios I e II: 0 pontos</li>
                 </ul>
-            </li>
-            <li><strong>Internação Recente:</strong> Sim: 3 pontos; Não: 0 pontos.</li>
-        </ul>
-        <p>Pacientes que ainda não foram visitados aparecem primeiro na lista. Pacientes com maior pontuação têm prioridade para visita.</p>
+            </div>
+        </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showDetails(id) {
+    document.getElementById(`details-${id}`).style.display = 'flex';
+}
+
+function hideDetails(id) {
+    document.getElementById(`details-${id}`).style.display = 'none';
+}
+
+// Fecha modal ao clicar fora
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}
