@@ -1,0 +1,19 @@
+projeto_pacientes/
+├── static/
+│   ├── css/
+│   │   ├── main.css          # Estilos globais e componentes
+│   │   └── forms.css         # Estilos específicos para formulários
+│   └── js/
+│       ├── main.js           # Funcionalidades principais e inicialização
+│       └── validation.js      # Validações de formulários
+├── templates/
+│   ├── adicionar.html        # Template do formulário de adição
+│   ├── base.html            # Template base com estrutura comum
+│   ├── editar.html          # Template do formulário de edição
+│   ├── error.html           # Template para páginas de erro
+│   └── index.html           # Template da página principal
+├── app.py                   # Aplicação principal Flask e lógica de negócio
+├── main.py                  # Script de inicialização do sistema
+├── setup.py                 # Script de instalação e configuração
+├── requirements.txt         # Dependências do projeto
+└── README.md               # Documentação do projeto
